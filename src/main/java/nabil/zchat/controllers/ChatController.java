@@ -2,11 +2,9 @@ package nabil.zchat.controllers;
 
 import lombok.RequiredArgsConstructor;
 import nabil.zchat.dtos.ChatMessageRequestDto;
-import nabil.zchat.entities.ChatMessage;
-import nabil.zchat.mappers.ChatMessageMapper;
+import nabil.zchat.services.ChatService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -16,13 +14,9 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final ChatMessageMapper chatMessageMapper;
-
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
-    ChatMessage sendMessage(@Payload ChatMessageRequestDto chatMessageRequestDto) {
-        ChatMessage chatMessage = chatMessageMapper.toChatMessage(chatMessageRequestDto);
-        chatMessage.setSender("nabil");
-        return chatMessage;
+    private final ChatService chatService;
+    @MessageMapping("/sendMessage")
+    private void sendMessage(@Payload ChatMessageRequestDto dto) {
+        chatService.sendMessage(dto);
     }
 }
