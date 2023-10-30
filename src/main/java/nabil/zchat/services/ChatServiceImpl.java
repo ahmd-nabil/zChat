@@ -21,13 +21,16 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void sendMessage(ChatMessageRequestDto dto) {
         ChatMessage chatMessage = chatMessageMapper.toChatMessage(dto);
-        chatMessage.setSender("DEFAULT");
         // 1. send message to the sender queue
-        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getSender(), chatMessage);
-//        simpMessagingTemplate.convertAndSendToUser(chatMessage.getSender(),"/topic/"+chatMessage.getSender(), chatMessage);
+        simpMessagingTemplate.convertAndSendToUser(chatMessage.getSender(),"/queue/messages", chatMessage);
         // 2. send message to the receiver queue
-        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getReceiver(), chatMessage);
-//        simpMessagingTemplate.convertAndSendToUser(chatMessage.getReceiver(),"/topic/"+chatMessage.getReceiver(), chatMessage);
-        // 3. persist the message in DB
+        // 2.1 if receiver is offline keep it in some queue to check before sending
+        simpMessagingTemplate.convertAndSendToUser(chatMessage.getReceiver(),"/queue/messages", chatMessage);
+        // 3. todo persist the message in DB
     }
+
+
+
+//        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getSender(), chatMessage);
+//        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getReceiver(), chatMessage);
 }

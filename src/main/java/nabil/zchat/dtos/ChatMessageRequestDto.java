@@ -11,6 +11,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ChatMessageRequestDto {
+    private Long id;
     private String content;
     private String receiver;
+    private String sender;
 }
