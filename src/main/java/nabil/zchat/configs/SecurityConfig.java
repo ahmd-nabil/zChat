@@ -2,6 +2,8 @@ package nabil.zchat.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,7 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         configurer -> configurer
-                                .requestMatchers("/ws/**", "/getAuth/**").permitAll()
+                                .requestMatchers("/ws", "/getAuth/**").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
@@ -38,5 +40,10 @@ public class SecurityConfig {
         UserDetails user1 = User.builder().username("ahmed").password("{noop}password").build();
         UserDetails user2 = User.builder().username("nabil").password("{noop}password").build();
         return new InMemoryUserDetailsManager(user1, user2);
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager() {
+        return new ProviderManager(new WebSocketAuthProvider(inMemoryUsers()));
     }
 }
