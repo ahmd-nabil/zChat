@@ -1,7 +1,7 @@
 package nabil.zchat.mappers;
 
+import nabil.zchat.domain.ChatMessage;
 import nabil.zchat.dtos.ChatMessageRequestDto;
-import nabil.zchat.entities.ChatMessage;
 import org.mapstruct.Mapper;
 
 /**

@@ -1,6 +1,6 @@
 package nabil.zchat.repositories;
 
-import nabil.zchat.entities.ChatMessage;
+import nabil.zchat.domain.ChatMessage;
 
 /**
  * @author Ahmed Nabil

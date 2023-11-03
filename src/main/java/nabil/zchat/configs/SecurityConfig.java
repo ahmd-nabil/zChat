@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         configurer -> configurer
-                                .requestMatchers("/ws", "/getAuth/**").permitAll()
+                                .requestMatchers("/ws", "/getAuth/**", "/error").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
@@ -39,7 +39,8 @@ public class SecurityConfig {
     public UserDetailsService inMemoryUsers() {
         UserDetails user1 = User.builder().username("ahmed").password("{noop}password").build();
         UserDetails user2 = User.builder().username("nabil").password("{noop}password").build();
-        return new InMemoryUserDetailsManager(user1, user2);
+        UserDetails user3 = User.builder().username("ali").password("{noop}password").build();
+        return new InMemoryUserDetailsManager(user1, user2, user3);
     }
 
     @Bean

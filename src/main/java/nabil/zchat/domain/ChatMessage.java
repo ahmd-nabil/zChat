@@ -1,4 +1,4 @@
-package nabil.zchat.entities;
+package nabil.zchat.domain;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

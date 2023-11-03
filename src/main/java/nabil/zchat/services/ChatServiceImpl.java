@@ -1,8 +1,8 @@
 package nabil.zchat.services;
 
 import lombok.RequiredArgsConstructor;
+import nabil.zchat.domain.ChatMessage;
 import nabil.zchat.dtos.ChatMessageRequestDto;
-import nabil.zchat.entities.ChatMessage;
 import nabil.zchat.mappers.ChatMessageMapper;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
