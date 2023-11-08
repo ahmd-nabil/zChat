@@ -27,7 +27,8 @@ public class Chat {
     private List<ChatUser> chatUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
-    private List<ChatMessage> chatMessages;
+    @Builder.Default
+    private List<ChatMessage> chatMessages = new ArrayList<>();
 
     public Chat(Long id, List<ChatUser> chatUsers, List<ChatMessage> chatMessages) {
         this.id = id;
