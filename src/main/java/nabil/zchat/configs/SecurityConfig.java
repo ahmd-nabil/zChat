@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         new AntPathRequestMatcher("/h2-console/**"),
                                         mvc.pattern("/ws"),
-                                        mvc.pattern("/getAuth/**"),
+                                        mvc.pattern("/auth/**"),
                                         mvc.pattern("/error"),
                                         mvc.pattern("/h2-console/**")).permitAll()
                                 .anyRequest().authenticated())
