@@ -1,11 +1,15 @@
 package nabil.zchat.services;
 
 import lombok.RequiredArgsConstructor;
+import nabil.zchat.domain.Chat;
 import nabil.zchat.domain.ChatMessage;
 import nabil.zchat.dtos.ChatMessageRequestDto;
 import nabil.zchat.mappers.ChatMessageMapper;
+import nabil.zchat.repositories.ChatRepo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 /**
  * @author Ahmed Nabil
@@ -17,19 +21,27 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatMessageMapper chatMessageMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ChatRepo chatRepo;
 
     @Override
     public void sendMessage(ChatMessageRequestDto dto) {
         ChatMessage chatMessage = chatMessageMapper.toChatMessage(dto);
         // 1. send message to the sender queue
-        simpMessagingTemplate.convertAndSendToUser(chatMessage.getSender(),"/queue/messages", chatMessage);
+        simpMessagingTemplate.convertAndSendToUser(chatMessage.getSender().getSubject(),"/queue/messages", chatMessage);
         // 2. send message to the receiver queue
         // 2.1 if receiver is offline keep it in some queue to check before sending
-        simpMessagingTemplate.convertAndSendToUser(chatMessage.getReceiver(),"/queue/messages", chatMessage);
+        simpMessagingTemplate.convertAndSendToUser(chatMessage.getReceiver().getSubject(),"/queue/messages", chatMessage);
         // 3. todo persist the message in DB
+        persistMessageInDb(chatMessage);
     }
 
-
+    private void persistMessageInDb(ChatMessage chatMessage) {
+        if(chatMessage.getChat() == null) {
+            chatMessage.setChat(Chat.builder().chatUsers(Arrays.asList(chatMessage.getSender(), chatMessage.getReceiver())).build());
+        }
+        chatMessage.getChat().addMessage(chatMessage);
+        chatRepo.save(chatMessage.getChat());
+    }
 
 //        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getSender(), chatMessage);
 //        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getReceiver(), chatMessage);

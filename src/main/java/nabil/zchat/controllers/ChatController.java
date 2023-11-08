@@ -1,16 +1,16 @@
 package nabil.zchat.controllers;
 
 import lombok.RequiredArgsConstructor;
+import nabil.zchat.domain.ChatUser;
 import nabil.zchat.dtos.ChatMessageRequestDto;
+import nabil.zchat.repositories.ChatUserRepo;
 import nabil.zchat.services.ChatService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-
-import java.security.Principal;
 
 /**
  * @author Ahmed Nabil
@@ -20,10 +20,12 @@ import java.security.Principal;
 public class ChatController {
 
     private final ChatService chatService;
+    private final ChatUserRepo userRepo;
     private final SimpMessagingTemplate simpMessagingTemplate;
     @MessageMapping("/messages/private")
-    private void sendPrivateMessage(@Payload ChatMessageRequestDto dto, @AuthenticationPrincipal Principal principal) {
-        dto.setSender(principal.getName());
+    private void sendPrivateMessage(@Payload ChatMessageRequestDto dto, Authentication authentication) {
+        ChatUser sender = userRepo.findBySubject(authentication.getName()).orElseThrow();
+        dto.setSender(sender);
         chatService.sendMessage(dto);
     }
 

@@ -36,10 +36,11 @@ public class ChatUser {
     @Builder.Default
     private List<Chat> chats = new ArrayList<>();
 
-    public ChatUser(Long id, String name, String email, List<Chat> chats) {
+    public ChatUser(Long id, String name, String email, String subject, List<Chat> chats) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.subject = subject;
         this.setChats(chats);
     }
 
