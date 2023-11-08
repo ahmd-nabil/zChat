@@ -1,10 +1,10 @@
 package nabil.zchat.repositories;
 
-import nabil.zchat.domain.ChatMessage;
+import nabil.zchat.domain.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * @author Ahmed Nabil
  */
-public interface ChatMessageRepo extends JpaRepository<ChatMessage, Long> {
+public interface ChatRepo extends JpaRepository<Chat, Long> {
 }
