@@ -11,23 +11,21 @@ import java.util.List;
  * @author Ahmed Nabil
  */
 @Data
-@Builder
 @Entity
+@Builder
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             joinColumns = @JoinColumn(name = "chat_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @Builder.Default
     private List<ChatUser> chatUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
-    @Builder.Default
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
     public Chat(Long id, List<ChatUser> chatUsers, List<ChatMessage> chatMessages) {
@@ -37,10 +35,35 @@ public class Chat {
     }
 
     public Chat() {
+        this.chatUsers = new ArrayList<>();
+        this.chatMessages = new ArrayList<>();
+    }
+
+    private static List<ChatUser> $default$chatUsers() {
+        return new ArrayList<>();
+    }
+
+    private static List<ChatMessage> $default$chatMessages() {
+        return new ArrayList<>();
+    }
+
+    public static ChatBuilder builder() {
+        return new ChatBuilder();
     }
 
     public void setChatUsers(List<ChatUser> chatUsers) {
-        this.chatUsers.forEach(user -> user.addChat(this));
+        if (chatUsers == null) return;
+        chatUsers.forEach(this::addChatUser);
+    }
+
+    public void addChatUser(ChatUser chatUser) {
+        chatUser.getChats().add(this);
+        this.chatUsers.add(chatUser);
+    }
+
+    public void removeChatUser(ChatUser chatUser) {
+        this.chatUsers.remove(chatUser);
+        chatUser.getChats().remove(this);
     }
 
     public void setChatMessages(List<ChatMessage> chatMessages) {

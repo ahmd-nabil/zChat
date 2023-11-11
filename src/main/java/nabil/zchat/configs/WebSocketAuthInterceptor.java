@@ -10,13 +10,11 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Ahmed Nabil
  */
 @RequiredArgsConstructor
-@Component
 public class WebSocketAuthInterceptor implements ChannelInterceptor {
     private static final String USERNAME_HEADER = "login";
     private static final String PASSWORD_HEADER = "passcode";

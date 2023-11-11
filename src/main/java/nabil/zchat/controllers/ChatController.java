@@ -1,7 +1,6 @@
 package nabil.zchat.controllers;
 
 import lombok.RequiredArgsConstructor;
-import nabil.zchat.domain.ChatUser;
 import nabil.zchat.dtos.ChatMessageRequestDto;
 import nabil.zchat.repositories.ChatUserRepo;
 import nabil.zchat.services.ChatService;
@@ -22,10 +21,11 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatUserRepo userRepo;
     private final SimpMessagingTemplate simpMessagingTemplate;
+
     @MessageMapping("/messages/private")
     private void sendPrivateMessage(@Payload ChatMessageRequestDto dto, Authentication authentication) {
-        ChatUser sender = userRepo.findBySubject(authentication.getName()).orElseThrow();
-        dto.setSender(sender);
+//        ChatUser sender = userRepo.findBySubject(authentication.getName()).orElseThrow();
+//        dto.setSender(sender);
         chatService.sendMessage(dto);
     }
 

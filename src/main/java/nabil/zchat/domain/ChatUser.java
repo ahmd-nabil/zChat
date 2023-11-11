@@ -1,8 +1,6 @@
 package nabil.zchat.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;
@@ -27,8 +25,6 @@ public class ChatUser {
     @NaturalId
     private String email;
 
-    @NotNull
-    @NotBlank
     @NaturalId
     private String subject;     // should be set first time the user logs in
 
@@ -45,21 +41,12 @@ public class ChatUser {
     }
 
     public ChatUser() {
+        this.chats = new ArrayList<>();
     }
 
     public void setChats(List<Chat> chats) {
         if(chats == null) return;
-        chats.forEach(this::addChat);
-    }
-
-    public void addChat(Chat chat) {
-        chat.getChatUsers().add(this);
-        this.chats.add(chat);
-    }
-
-    public void removeChat(Chat chat) {
-        chat.getChatUsers().remove(this);
-        this.chats.remove(chat);
+        chats.forEach(chat -> chat.addChatUser(this));
     }
 
     @Override
