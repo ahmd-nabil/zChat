@@ -39,18 +39,6 @@ public class Chat {
         this.chatMessages = new ArrayList<>();
     }
 
-    private static List<ChatUser> $default$chatUsers() {
-        return new ArrayList<>();
-    }
-
-    private static List<ChatMessage> $default$chatMessages() {
-        return new ArrayList<>();
-    }
-
-    public static ChatBuilder builder() {
-        return new ChatBuilder();
-    }
-
     public void setChatUsers(List<ChatUser> chatUsers) {
         if (chatUsers == null) return;
         chatUsers.forEach(this::addChatUser);
