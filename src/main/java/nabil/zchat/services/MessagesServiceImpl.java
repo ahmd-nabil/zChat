@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import nabil.zchat.domain.Chat;
 import nabil.zchat.domain.ChatMessage;
 import nabil.zchat.dtos.ChatMessageRequestDto;
+import nabil.zchat.dtos.SimpleChatMessageResponse;
 import nabil.zchat.mappers.ChatMessageMapper;
+import nabil.zchat.repositories.ChatMessageRepo;
 import nabil.zchat.repositories.ChatRepo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Ahmed Nabil
@@ -17,11 +20,12 @@ import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
-public class ChatServiceImpl implements ChatService {
+public class MessagesServiceImpl implements MessagesService {
 
     private final ChatMessageMapper chatMessageMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRepo chatRepo;
+    private final ChatMessageRepo chatMessageRepo;
 
     @Override
     public void sendMessage(ChatMessageRequestDto dto) {
@@ -43,6 +47,22 @@ public class ChatServiceImpl implements ChatService {
         chatRepo.save(chatMessage.getChat());
     }
 
-//        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getSender(), chatMessage);
+    @Override
+    public List<SimpleChatMessageResponse> getAllUserMessages(Long userId) {
+        return this.chatMessageRepo.findAllMessagesByUserId(userId)
+                .stream()
+                .map(chatMessageMapper::toSimpleChatMessageResponseDto)
+                .toList();
+    }
+
+    @Override
+    public List<SimpleChatMessageResponse> getAllUserMessages(String userSubject) {
+        return this.chatMessageRepo.findAllMessagesByUserSubject(userSubject)
+                .stream()
+                .map(chatMessageMapper::toSimpleChatMessageResponseDto)
+                .toList();
+    }
+
+    //        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getSender(), chatMessage);
 //        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getReceiver(), chatMessage);
 }
