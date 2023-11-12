@@ -10,6 +10,7 @@ import nabil.zchat.repositories.ChatMessageRepo;
 import nabil.zchat.repositories.ChatRepo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MessagesServiceImpl implements MessagesService {
 
     private final ChatMessageMapper chatMessageMapper;
@@ -31,10 +33,10 @@ public class MessagesServiceImpl implements MessagesService {
     public void sendMessage(ChatMessageRequestDto dto) {
         ChatMessage chatMessage = chatMessageMapper.toChatMessage(dto);
         // 1. send message to the sender queue
-        simpMessagingTemplate.convertAndSendToUser(chatMessage.getSender().getSubject(),"/queue/messages", chatMessage);
+//        simpMessagingTemplate.convertAndSendToUser(chatMessage.getSender().getSubject(),"/queue/messages", chatMessage);
         // 2. send message to the receiver queue
-        // 2.1 if receiver is offline keep it in some queue to check before sending
         simpMessagingTemplate.convertAndSendToUser(chatMessage.getReceiver().getSubject(),"/queue/messages", chatMessage);
+        // 2.1 if receiver is offline keep it in some queue to check before sending
         // 3. todo persist the message in DB
         persistMessageInDb(chatMessage);
     }
