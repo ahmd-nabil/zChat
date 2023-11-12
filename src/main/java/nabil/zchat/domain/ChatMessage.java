@@ -1,5 +1,6 @@
 package nabil.zchat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ChatMessage {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String content;
@@ -31,6 +32,7 @@ public class ChatMessage {
 
     @ManyToOne
     @JoinColumn(name = "chat_id")
+    @JsonIgnore
     private Chat chat;
 
     @Override

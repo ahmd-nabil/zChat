@@ -1,5 +1,6 @@
 package nabil.zchat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ import java.util.Objects;
 @Builder
 public class ChatUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -30,6 +31,7 @@ public class ChatUser {
 
     @ManyToMany(mappedBy = "chatUsers")
     @Builder.Default
+    @JsonIgnore
     private List<Chat> chats = new ArrayList<>();
 
     public ChatUser(Long id, String name, String email, String subject, List<Chat> chats) {
