@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -22,11 +23,13 @@ public class ChatController {
 
     private final ChatService chatService;
 
+    @ResponseBody
     @GetMapping("/{id}")
     public ResponseEntity<Chat> getChat(@PathVariable Long id) {
         return ResponseEntity.ok(this.chatService.getChatById(id));
     }
 
+    @ResponseBody
     @GetMapping
     public List<Chat> getAllUserChats(Authentication authentication) {
         return this.chatService.getAllChatsByUserSubject(authentication.getName());

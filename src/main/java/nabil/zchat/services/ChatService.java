@@ -1,11 +1,25 @@
 package nabil.zchat.services;
 
-import nabil.zchat.dtos.ChatMessageRequestDto;
+import lombok.RequiredArgsConstructor;
+import nabil.zchat.domain.Chat;
+import nabil.zchat.repositories.ChatRepo;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Ahmed Nabil
  */
-public interface ChatService {
+@Service
+@RequiredArgsConstructor
+public class ChatService {
+    private final ChatRepo chatRepo;
 
-    void sendMessage(ChatMessageRequestDto dto);
+    public Chat getChatById(Long id) {
+        return this.chatRepo.findById(id).get();
+    }
+
+    public List<Chat> getAllChatsByUserSubject(String subject) {
+        return this.chatRepo.getAllChatsByUserSubject(subject);
+    }
 }
