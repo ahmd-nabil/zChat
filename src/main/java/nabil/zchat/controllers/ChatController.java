@@ -1,37 +1,34 @@
 package nabil.zchat.controllers;
 
 import lombok.RequiredArgsConstructor;
-import nabil.zchat.dtos.ChatMessageRequestDto;
-import nabil.zchat.repositories.ChatUserRepo;
+import nabil.zchat.domain.Chat;
 import nabil.zchat.services.ChatService;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * @author Ahmed Nabil
  */
-@Controller("/")
+@Controller
+@RequestMapping("/chats")
 @RequiredArgsConstructor
 public class ChatController {
 
     private final ChatService chatService;
-    private final ChatUserRepo userRepo;
-    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("/messages/private")
-    private void sendPrivateMessage(@Payload ChatMessageRequestDto dto, Authentication authentication) {
-//        ChatUser sender = userRepo.findBySubject(authentication.getName()).orElseThrow();
-//        dto.setSender(sender);
-        chatService.sendMessage(dto);
+    @GetMapping("/{id}")
+    public ResponseEntity<Chat> getChat(@PathVariable Long id) {
+        return ResponseEntity.ok(this.chatService.getChatById(id));
     }
 
-    @MessageMapping("/messages")
-    @SendTo("/messages")
-    private void sendPublicMessage(@Payload ChatMessageRequestDto dto) {
-        simpMessagingTemplate.convertAndSend("/topic/messages", dto);
+    @GetMapping
+    public List<Chat> getAllUserChats(Authentication authentication) {
+        return this.chatService.getAllChatsByUserSubject(authentication.getName());
     }
 }

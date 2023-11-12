@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,7 +19,8 @@ import java.util.List;
 /**
  * @author Ahmed Nabil
  */
-@Controller("/")
+@Controller
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class MessagesController {
 
@@ -38,7 +40,9 @@ public class MessagesController {
 
     @GetMapping("/messages")
     @ResponseBody
-    public List<SimpleChatMessageResponse> getAllMessagesByUser(@RequestParam(required = false) Long userId, @RequestParam(required = false) String subject) {
+    public List<SimpleChatMessageResponse> getAllMessagesByUser(
+                        @RequestParam(value = "userId", required = false) Long userId,
+                        @RequestParam(value = "subject", required = false) String subject) {
         return subject != null ? this.messagesService.getAllUserMessages(subject) : this.messagesService.getAllUserMessages(userId);
     }
 }
