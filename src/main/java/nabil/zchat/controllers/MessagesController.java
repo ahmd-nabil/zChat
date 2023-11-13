@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +29,8 @@ public class MessagesController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/messages/private")
-    private void sendPrivateMessage(@Payload ChatMessageRequestDto dto) {
-        messagesService.sendMessage(dto);
+    private void sendPrivateMessage(@Payload ChatMessageRequestDto dto, Authentication authentication) {
+        messagesService.sendMessage(dto, authentication);
     }
 
     @MessageMapping("/messages")
