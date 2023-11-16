@@ -28,10 +28,14 @@ public class Chat {
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
-    public Chat(Long id, List<ChatUser> chatUsers, List<ChatMessage> chatMessages) {
+    @OneToOne
+    private ChatMessage lastMessage;
+
+    public Chat(Long id, List<ChatUser> chatUsers, List<ChatMessage> chatMessages, ChatMessage lastMessage) {
         this.id = id;
         this.setChatUsers(chatUsers);
         this.setChatMessages(chatMessages);
+        this.lastMessage = lastMessage;
     }
 
     public Chat() {
@@ -62,6 +66,7 @@ public class Chat {
     public void addMessage(ChatMessage message) {
         message.setChat(this);
         this.chatMessages.add(message);
+        this.lastMessage = message;
     }
 
     public void removeMessage(ChatMessage message) {
