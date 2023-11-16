@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Ahmed Nabil
  */
@@ -34,6 +36,9 @@ public class ChatMessage {
     @JoinColumn(name = "chat_id")
     @JsonIgnore
     private Chat chat;
+
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Override
     public String toString() {

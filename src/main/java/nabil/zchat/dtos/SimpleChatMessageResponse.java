@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Ahmed Nabil
  */
@@ -20,4 +22,5 @@ public class SimpleChatMessageResponse {
     private Long chatId;
     private String senderSubject;
     private String receiverSubject;
+    private LocalDateTime createdAt;
 }
