@@ -1,11 +1,15 @@
 package nabil.zchat.domain;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,12 +38,19 @@ public class ChatUser {
     @JsonIgnore
     private List<Chat> chats = new ArrayList<>();
 
-    public ChatUser(Long id, String name, String email, String subject, List<Chat> chats) {
+    private LocalDateTime lastSeen;
+
+    @JsonProperty(value = "isOnline")
+    private boolean isOnline;
+
+    public ChatUser(Long id, String name, String email, String subject, List<Chat> chats, LocalDateTime lastSeen, boolean isOnline) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.subject = subject;
         this.setChats(chats);
+        this.lastSeen = lastSeen;
+        this.isOnline = isOnline;
     }
 
     public ChatUser() {
