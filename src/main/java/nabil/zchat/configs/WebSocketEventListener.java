@@ -5,6 +5,8 @@ import nabil.zchat.domain.ChatUser;
 import nabil.zchat.repositories.ChatUserRepo;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -22,10 +24,17 @@ public class WebSocketEventListener {
     private final SimpMessagingTemplate simpMessagingTemplate;
     // todo keep a friendsList of each user to send status only to those who cares
     @EventListener
-    private void handleSessionConnected(SessionConnectedEvent event) {
+    public void handleSessionConnected(SessionConnectedEvent event) {
         if(event == null || event.getUser() == null) return;
         String connectUserSubject = event.getUser().getName();
-        ChatUser connectedUser = chatUserRepo.findBySubject(connectUserSubject).orElseThrow();
+        Map<String, Object> claims = ((Jwt)((JwtAuthenticationToken) event.getUser()).getPrincipal()).getClaims();
+        ChatUser connectedUser = chatUserRepo.findBySubject(connectUserSubject).orElse(
+                ChatUser.builder()
+                        .email(claims.get("email").toString())
+                        .subject(claims.get("sub").toString())
+                        .name(claims.get("name").toString())
+                        .build()
+        );
         connectedUser.setOnline(true);
         connectedUser.setLastSeen(LocalDateTime.now());
         chatUserRepo.save(connectedUser);
@@ -33,7 +42,7 @@ public class WebSocketEventListener {
     }
 
     @EventListener
-    private void handleSessionDisconnected(SessionDisconnectEvent event) {
+    public void handleSessionDisconnected(SessionDisconnectEvent event) {
         if(event == null || event.getUser() == null) return;
         String disConnectedSubject = event.getUser().getName();
         ChatUser disConnectedUser = chatUserRepo.findBySubject(disConnectedSubject).orElseThrow();
