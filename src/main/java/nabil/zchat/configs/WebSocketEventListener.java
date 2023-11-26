@@ -2,6 +2,7 @@ package nabil.zchat.configs;
 
 import lombok.RequiredArgsConstructor;
 import nabil.zchat.domain.ChatUser;
+import nabil.zchat.domain.ChatUserStatus;
 import nabil.zchat.repositories.ChatUserRepo;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -51,5 +52,4 @@ public class WebSocketEventListener {
         chatUserRepo.save(disConnectedUser);
         simpMessagingTemplate.convertAndSend("/topic/status", new ChatUserStatus(disConnectedSubject, false, LocalDateTime.now()));
     }
-    private record ChatUserStatus(String subject, boolean isOnline, LocalDateTime lastSeen) {}
 }
