@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
@@ -38,7 +40,13 @@ public class SecurityConfig {
     private final MvcRequestMatcher.Builder mvc;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuerUri;
+    private String ISSUER_URI;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String CLIENT_ID;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String CLIENT_SECRET;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -54,6 +62,12 @@ public class SecurityConfig {
                                         mvc.pattern("/error"),
                                         mvc.pattern("/h2-console/**")).permitAll()
                                 .anyRequest().authenticated())
+                .exceptionHandling(configurer -> {
+                    configurer.authenticationEntryPoint((request, response, authException) -> {
+                        response.addHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer ");
+                        response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+                    });
+                })
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
@@ -76,7 +90,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return JwtDecoders.fromIssuerLocation(issuerUri);
+        return JwtDecoders.fromIssuerLocation(ISSUER_URI);
     }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
