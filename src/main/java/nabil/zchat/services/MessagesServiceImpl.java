@@ -72,6 +72,4 @@ public class MessagesServiceImpl implements MessagesService {
                 .toList();
     }
 
-    //        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getSender(), chatMessage);
-//        simpMessagingTemplate.convertAndSend("/topic/"+chatMessage.getReceiver(), chatMessage);
 }
