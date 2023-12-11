@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("/chats")
 @RequiredArgsConstructor
 public class ChatController {
+    private final static String API = "http://localhost:8080";
 
     private final ChatService chatService;
 
@@ -35,13 +37,13 @@ public class ChatController {
     @ResponseBody
     @GetMapping
     public List<ChatResponse> getAllUserChats(Authentication authentication) {
-        return this.chatService.getAllChatsByUserSubject(authentication.getName());
+        return this.chatService.getAllChatsByUserSubject(authentication);
     }
 
     @ResponseBody
     @PostMapping()
     public ResponseEntity<Void> addNewChat(@RequestBody ArrayList<String> chatUsersSubjects) {
-        chatService.addNewChat(chatUsersSubjects);
-        return ResponseEntity.ok().build();
+        ChatResponse response = chatService.addNewChat(chatUsersSubjects);
+        return ResponseEntity.created(URI.create(API + response.getId())).build();
     }
 }
