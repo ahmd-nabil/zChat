@@ -3,6 +3,7 @@ package nabil.zchat.controllers;
 import lombok.RequiredArgsConstructor;
 import nabil.zchat.dtos.ChatResponse;
 import nabil.zchat.services.ChatService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ public class ChatController {
     @ResponseBody
     @GetMapping("/{id}")
     public ResponseEntity<ChatResponse> getChat(@PathVariable Long id) {
+        if(id == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return ResponseEntity.ok(this.chatService.getChatById(id));
     }
 

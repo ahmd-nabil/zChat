@@ -1,13 +1,15 @@
 package nabil.zchat.domain;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ public class ChatUser {
     }
 
     public void setChats(List<Chat> chats) {
-        if(chats == null) return;
+        if(this.chats == null) this.chats = new ArrayList<>();
         chats.forEach(chat -> chat.addChatUser(this));
     }
 

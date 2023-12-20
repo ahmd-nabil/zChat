@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nabil.zchat.domain.Chat;
 import nabil.zchat.domain.ChatUser;
 import nabil.zchat.dtos.ChatResponse;
+import nabil.zchat.exceptions.ChatNotFoundException;
 import nabil.zchat.mappers.ChatMapper;
 import nabil.zchat.repositories.ChatRepo;
 import nabil.zchat.repositories.ChatUserRepo;
@@ -23,7 +24,7 @@ public class ChatService {
     private final ChatUserRepo chatUserRepo;
 
     public ChatResponse getChatById(Long id) {
-        return this.chatMapper.toChatResponse(this.chatRepo.findById(id).orElseThrow());
+        return this.chatMapper.toChatResponse(this.chatRepo.findById(id).orElseThrow(ChatNotFoundException::new));
     }
 
     public List<ChatResponse> getAllChatsByUserSubject(Authentication authentication) {
