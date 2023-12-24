@@ -3,6 +3,8 @@ package nabil.zchat.controllers;
 import lombok.RequiredArgsConstructor;
 import nabil.zchat.dtos.ChatMessageRequestDto;
 import nabil.zchat.dtos.SimpleChatMessageResponse;
+import nabil.zchat.exceptions.MessageNotFoundException;
+import nabil.zchat.exceptions.UserNotFoundException;
 import nabil.zchat.services.MessagesService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -29,13 +31,16 @@ public class MessagesController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/messages/private")
-    private void sendPrivateMessage(@Payload ChatMessageRequestDto dto, Authentication authentication) {
+    public void sendPrivateMessage(@Payload ChatMessageRequestDto dto, Authentication authentication) {
+        if(dto == null) throw new MessageNotFoundException();
+        if(authentication == null) throw new UserNotFoundException();
         messagesService.sendMessage(dto, authentication);
     }
 
     @MessageMapping("/messages")
     @SendTo("/messages")
-    private void sendPublicMessage(@Payload ChatMessageRequestDto dto) {
+    public void sendPublicMessage(@Payload ChatMessageRequestDto dto) {
+        if(dto == null) throw new MessageNotFoundException();
         simpMessagingTemplate.convertAndSend("/topic/messages", dto);
     }
 

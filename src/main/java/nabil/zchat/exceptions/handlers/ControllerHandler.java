@@ -3,6 +3,7 @@ package nabil.zchat.exceptions.handlers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nabil.zchat.exceptions.ChatNotFoundException;
+import nabil.zchat.exceptions.MessageNotFoundException;
 import nabil.zchat.exceptions.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,14 @@ public class ControllerHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(ChatNotFoundException.class)
     public ResponseEntity<?> handleChatNotFoundException(HttpServletRequest req, HttpServletResponse res, ChatNotFoundException ex) {
+        var headers = new HttpHeaders();
+        headers.put("content-type", List.of("application/json"));
+        return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(MessageNotFoundException.class)
+    public ResponseEntity<?> handleMessageNotFoundException(HttpServletRequest req, HttpServletResponse res, MessageNotFoundException ex) {
         var headers = new HttpHeaders();
         headers.put("content-type", List.of("application/json"));
         return new ResponseEntity<>(ex.getMessage(), headers, HttpStatus.NOT_FOUND);
