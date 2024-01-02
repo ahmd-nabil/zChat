@@ -2,9 +2,11 @@ package nabil.zchat.services;
 
 import lombok.RequiredArgsConstructor;
 import nabil.zchat.domain.Chat;
+import nabil.zchat.domain.ChatMessage;
 import nabil.zchat.domain.ChatUser;
 import nabil.zchat.dtos.ChatResponse;
 import nabil.zchat.exceptions.ChatNotFoundException;
+import nabil.zchat.exceptions.UserNotFoundException;
 import nabil.zchat.mappers.ChatMapper;
 import nabil.zchat.repositories.ChatRepo;
 import nabil.zchat.repositories.ChatUserRepo;
@@ -34,8 +36,10 @@ public class ChatService {
 
     public ChatResponse addNewChat(List<String> chatUsersSubjects) {
         List<ChatUser> chatUsers = chatUserRepo.findAllBySubject(chatUsersSubjects);
-        if(chatUsers.isEmpty()) throw new RuntimeException("1 user required at least.");
-        Chat newChat = Chat.builder().chatUsers(chatUsers).build();
+        if(chatUsers.isEmpty()) throw new UserNotFoundException("1 user required at least.");
+        Chat newChat = Chat.builder()
+                .chatUsers(chatUsers).build();
+        newChat.addMessage(ChatMessage.builder().content("This chat is NOT end-to-end encrypted, and anyone can read it").build());
         return chatMapper.toChatResponse(chatRepo.save(newChat));
     }
 }
